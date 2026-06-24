@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>등부표 이출거리 대시보드</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">⚓</div>
+        <div>
+          <h1>Buoy Monitor</h1>
+          <p>등부표 이출관리</p>
+        </div>
+      </div>
+
+      <nav>
+        <a href="#" class="active">대시보드</a>
+        <a href="#">좌표 입력</a>
+        <a href="#">계산 결과</a>
+        <a href="#">최근 기록</a>
+      </nav>
+
+      <div class="sidebar-info">
+        <strong>입력 지원</strong>
+        <p>십진수, 도분, 도분초 좌표 형식을 모두 사용할 수 있습니다.</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2>등부표 이출거리 확인 대시보드</h2>
+          <p>기준 위치와 현재 위치를 비교하여 이출거리와 방위각을 계산합니다.</p>
+        </div>
+
+        <div class="top-actions">
+          <button id="sampleBtn" class="secondary">예시값 입력</button>
+          <button id="resetBtn" class="danger">초기화</button>
+        </div>
+      </header>
+
+      <section class="summary-grid">
+        <div class="summary-card">
+          <span>이출거리</span>
+          <strong id="summaryDistance">-</strong>
+          <p>기준 위치 대비 현재 거리</p>
+        </div>
+
+        <div class="summary-card">
+          <span>해리 환산</span>
+          <strong id="summaryNm">-</strong>
+          <p>Nautical Mile 기준</p>
+        </div>
+
+        <div class="summary-card">
+          <span>방위각</span>
+          <strong id="summaryBearing">-</strong>
+          <p>기준 위치에서 현재 위치 방향</p>
+        </div>
+
+        <div class="summary-card status-card">
+          <span>현재 상태</span>
+          <strong id="summaryStatus">대기</strong>
+          <p id="summaryStatusText">좌표 입력 전입니다.</p>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <section class="panel input-panel">
+          <div class="panel-header">
+            <h3>등부표 정보</h3>
+          </div>
+
+          <label>
+            등부표 이름
+            <input type="text" id="buoyName" placeholder="예: 부산항 A-12 등부표" />
+          </label>
+
+          <label>
+            허용 이출거리
+            <div class="unit-input">
+              <input type="number" id="limitDistance" value="50" min="0" />
+              <span>m</span>
+            </div>
+          </label>
+
+          <div class="divider"></div>
+
+          <h3>기준 위치</h3>
+
+          <label>
+            기준 위도
+            <input type="text" id="baseLat" placeholder="예: 35° 05' 48.12&quot; N" />
+          </label>
+
+          <label>
+            기준 경도
+            <input type="text" id="baseLon" placeholder="예: 129° 02' 21.84&quot; E" />
+          </label>
+
+          <div class="divider"></div>
+
+          <h3>현재 위치</h3>
+
+          <label>
+            현재 위도
+            <input type="text" id="currentLat" placeholder="예: 35° 05.820' N" />
+          </label>
+
+          <label>
+            현재 경도
+            <input type="text" id="currentLon" placeholder="예: 129° 02.388' E" />
+          </label>
+
+          <button id="calculateBtn" class="calculate-btn">이출거리 계산</button>
+        </section>
+
+        <section class="panel result-panel">
+          <div class="panel-header">
+            <h3>계산 결과</h3>
+            <span id="resultBadge" class="badge wait">대기</span>
+          </div>
+
+          <div class="gauge-box">
+            <div class="gauge-circle" id="gaugeCircle">
+              <div>
+                <strong id="gaugeDistance">-</strong>
+                <span>meters</span>
+              </div>
+            </div>
+
+            <p id="message" class="message">
+              좌표를 입력한 뒤 계산 버튼을 누르세요.
+            </p>
+          </div>
+
+          <div class="detail-grid">
+            <div>
+              <span>이출거리</span>
+              <strong id="distanceMeter">-</strong>
+            </div>
+
+            <div>
+              <span>해리</span>
+              <strong id="distanceNm">-</strong>
+            </div>
+
+            <div>
+              <span>방위각</span>
+              <strong id="bearing">-</strong>
+            </div>
+
+            <div>
+              <span>허용거리</span>
+              <strong id="limitView">-</strong>
+            </div>
+          </div>
+
+          <div class="coordinate-preview">
+            <h4>좌표 변환 결과</h4>
+            <p>기준 위치: <span id="basePreview">-</span></p>
+            <p>현재 위치: <span id="currentPreview">-</span></p>
+          </div>
+
+          <div class="format-help">
+            <h4>입력 예시</h4>
+            <ul>
+              <li>35.096700</li>
+              <li>35° 05.802' N</li>
+              <li>35° 05' 48.12" N</li>
+              <li>35 05 48.12</li>
+            </ul>
+          </div>
+        </section>
+      </section>
+
+      <section class="panel history-panel">
+        <div class="panel-header">
+          <h3>최근 계산 기록</h3>
+          <button id="clearHistoryBtn" class="small-danger">기록 삭제</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>시간</th>
+                <th>등부표</th>
+                <th>이출거리</th>
+                <th>해리</th>
+                <th>방위각</th>
+                <th>상태</th>
+              </tr>
+            </thead>
+            <tbody id="historyTable">
+              <tr>
+                <td colspan="6" class="empty">최근 계산 기록이 없습니다.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
